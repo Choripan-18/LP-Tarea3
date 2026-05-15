@@ -4,6 +4,7 @@ import Entidades.Enemigo;
 import Entidades.Jugador;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Clase abstracta que representa una zona del mundo del juego.
@@ -29,8 +30,9 @@ public abstract class Zona {
     /**
      * Ejecuta la acción principal de la zona (explorar, combatir, etc.).
      * @param jugador el jugador que realiza la acción
+     * @param sc el scanner para leer la entrada del usuario
      */
-    public abstract void accionZona(Jugador jugador);
+    public abstract void accionZona(Jugador jugador, Scanner sc);
 
     /**
      * Valida si el jugador cumple los requisitos mínimos para ingresar a la zona.

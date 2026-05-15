@@ -6,10 +6,9 @@ import Componentes.Materia;
 import Componentes.Vulnerable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
- * Clase principal que representa al jugador Cloud.
+ * Clase principal del jugador.
  * Gestiona el nivel, experiencia, chatarra e inventario (mochila).
  * Contiene la clase anidada Arma que gestiona las materias equipadas.
  */
@@ -23,11 +22,9 @@ public class Jugador {
     private Estadisticas stats;
     public Arma busterSword;
 
-    private static final Random rand = new Random();
 
     /**
-     * Constructor de Cloud. Inicializa en Nivel 1 con estadísticas base.
-     * HP Máx: 200, MP Máx: 50, Fuerza: 15, Magia: 15, chatarra: 0, expActual: 0.
+     * Constructor del jugador. Inicializa en Nivel 1 con las estadísticas base.
      */
     public Jugador() {
         this.nivel = 1;
@@ -54,13 +51,12 @@ public class Jugador {
     }
 
     /**
-     * Sube un nivel e incrementa las estadísticas base automáticamente.
-     * +10 HP Máximo, +5 MP Máximo, +4 Fuerza, +6 Magia.
+     * Sube un nivel e incrementa las estadísticas base.
      */
     private void subirNivel() {
         nivel++;
         stats.setHpMaximo(stats.getHpMaximo() + 10);
-        stats.setHpActual(stats.getHpActual() + 10); // También recupera algo de HP
+        stats.setHpActual(stats.getHpActual() + 10); // Subir de nivel también cura por la cantidad aumentada del máximo.
         stats.setMpMaximo(stats.getMpMaximo() + 5);
         stats.setMpActual(stats.getMpActual() + 5);
         stats.setFuerza(stats.getFuerza() + 4);
@@ -73,7 +69,7 @@ public class Jugador {
      * Recibe la recompensa de chatarra de un enemigo derrotado.
      * @param enemigo el enemigo que suelta la chatarra
      */
-    public void giveChatarraRecompensa(Enemigo enemigo) {
+    public void darChatarraRecompensa(Enemigo enemigo) {
         this.chatarra += enemigo.getChatarraRecompensa();
     }
 
@@ -108,10 +104,10 @@ public class Jugador {
     }
 
     /**
-     * Aplica la penalización de derrota: pierde toda la chatarra y vacía la mochila.
+     * Pierde toda la chatarra y vacía la mochila.
      * Las materias del Arma quedan intactas.
      */
-    public void aplicarPenalidadDerrota() {
+    public void aplicarDerrota() {
         this.chatarra = 0;
         this.mochila.clear();
         this.stats.restaurarHPCompleto();
@@ -166,12 +162,8 @@ public class Jugador {
         System.out.println("Mochila (" + mochila.size() + " materias): " + mochila);
     }
 
-    // =========================================================
-    //   CLASE ANIDADA: Arma (Buster Sword)
-    // =========================================================
-
     /**
-     * Clase anidada que representa el Arma de Cloud (Buster Sword).
+     * Clase anidada para el Arma de Cloud Buster Sword.
      * Gestiona hasta 5 ranuras de materias y la Barra de Límite (0-100).
      * Accede directamente a las estadísticas de Cloud para calcular daño.
      */
@@ -192,7 +184,7 @@ public class Jugador {
         /**
          * Equipa una Materia en una ranura libre del Arma.
          * @param materia la materia a equipar
-         * @return true si se equipó, false si no hay espacio (máx 5 ranuras)
+         * @return true si se equipó, false si no hay espacio (máx 5 materias)
          */
         public boolean equiparMateria(Materia materia) {
             if (materiasEquipadas.size() >= 5) {
@@ -222,7 +214,7 @@ public class Jugador {
          * Calcula el daño físico de Cloud: floor(Fuerza x 1.25).
          * @return daño físico calculado
          */
-        public int calcularDanoFisico() {
+        public int calcularDañoFisico() {
             return (int)(stats.getFuerza() * 1.25);
         }
 
@@ -235,8 +227,8 @@ public class Jugador {
          * @param enemigo el enemigo objetivo (puede ser null si es CURA)
          * @return daño/curación calculado, o -1 si no hay MP suficiente o no hay materias del elemento
          */
-        public int calcularDanoMagico(Elemento elemento, Enemigo enemigo) {
-            int n = contarMateriasDeElemento(elemento);
+        public int calcularDañoMagico(Elemento elemento, Enemigo enemigo) {
+            int n = contarMateriasElemento(elemento);
             if (n == 0) {
                 System.out.println("No tienes materias de ese elemento equipadas.");
                 return -1;
@@ -246,54 +238,53 @@ public class Jugador {
                 System.out.println("No tienes suficiente MP. Necesitas " + costoMP + " MP.");
                 return -1;
             }
-            int danoBase = (int)(stats.getMagia() * (1.0 + (0.5 * n)));
+            int dañoBase = (int)(stats.getMagia() * (1.0 + (0.5 * n)));
 
             // Aplicar multiplicador elemental si el enemigo implementa Vulnerable
             if (enemigo instanceof Vulnerable && elemento != Elemento.CURA) {
                 Vulnerable v = (Vulnerable) enemigo;
                 double multiplicador = v.evaluarDebilidad(elemento);
-                danoBase = (int)(danoBase * multiplicador);
+                dañoBase = (int)(dañoBase * multiplicador);
                 if (multiplicador == 2.0) System.out.println("Es muy efectivo! (x2.0)");
                 else if (multiplicador == 0.5) System.out.println("No es muy efectivo... (x0.5)");
                 else if (multiplicador == 0.0) System.out.println(enemigo.getNombre() + " es inmune a ese elemento!");
             }
-            return danoBase;
+            return dañoBase;
         }
 
         /**
          * Calcula el daño del Ataque Límite: Fuerza x 5.
-         * No consume MP y es un ataque físico devastador.
          * Reinicia la Barra de Límite a 0 tras ejecutarse.
          * @return daño calculado del Límite
          */
-        public int calcularDanoLimite() {
-            int dano = stats.getFuerza() * 5;
+        public int calcularDañoLimite() {
+            int daño = stats.getFuerza() * 5;
             cargaLimite = 0;
-            System.out.println("*** OMNISLASH! Ataque Límite de Cloud! ***");
-            return dano;
+            System.out.println("*** DESMANTELAR! Ataque Límite de Cloud! ***");
+            return daño;
         }
 
         /**
          * Carga la Barra de Límite al recibir daño: += floor(daño / 2).
-         * @param danoRecibido el daño recibido
+         * @param dañoRecibido el daño recibido
          */
-        public void cargarLimiteAlRecibirDano(int danoRecibido) {
-            cargaLimite += (danoRecibido / 2);
+        public void cargarLimiteAlRecibirDaño(int dañoRecibido) {
+            cargaLimite += (dañoRecibido / 2);
             if (cargaLimite > 100) cargaLimite = 100;
         }
 
         /**
          * Carga la Barra de Límite al infligir daño: += floor(daño / 5).
-         * @param danoInfligido el daño infligido
+         * @param dañoInfligido el daño infligido
          */
-        public void cargarLimiteAlInfligirDano(int danoInfligido) {
-            cargaLimite += (danoInfligido / 5);
+        public void cargarLimiteAlInfligirDaño(int dañoInfligido) {
+            cargaLimite += (dañoInfligido / 5);
             if (cargaLimite > 100) cargaLimite = 100;
         }
 
         /**
          * Verifica si la Barra de Límite está llena (>= 100).
-         * @return true si el Límite está disponible
+         * @return true si el  Ataque Límite está disponible
          */
         public boolean limiteDisponible() {
             return cargaLimite >= 100;
@@ -304,7 +295,7 @@ public class Jugador {
          * @param elemento el elemento a contar
          * @return cantidad de materias de ese elemento
          */
-        public int contarMateriasDeElemento(Elemento elemento) {
+        public int contarMateriasElemento(Elemento elemento) {
             int count = 0;
             for (Materia m : materiasEquipadas) {
                 if (m.getElemento() == elemento) count++;
@@ -318,7 +309,7 @@ public class Jugador {
          * @return true si hay al menos una materia de ese elemento
          */
         public boolean tieneMateria(Elemento elemento) {
-            return contarMateriasDeElemento(elemento) > 0;
+            return contarMateriasElemento(elemento) > 0;
         }
 
         // --- Getters y Setters ---

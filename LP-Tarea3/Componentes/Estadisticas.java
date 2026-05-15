@@ -1,8 +1,7 @@
 package Componentes;
 
 /**
- * Clase que representa las estadísticas de combate de una entidad.
- * Gestiona HP, MP, Fuerza y Magia tanto actuales como máximos.
+ * Gestor de estadísticas para entidades, actuales y máximas.
  */
 public class Estadisticas {
 
@@ -14,8 +13,7 @@ public class Estadisticas {
     private int magia;
 
     /**
-     * Constructor que inicializa las estadísticas con los valores base de Nivel 1.
-     * HP Máximo: 200, MP Máximo: 50, Fuerza: 15, Magia: 15.
+     * Constructor que inicializa las estadísticas con los valores base de nivel 1.
      */
     public Estadisticas() {
         this.hpMaximo = 200;
@@ -42,10 +40,10 @@ public class Estadisticas {
     }
 
     /**
-     * Aplica daño al HP actual de la entidad, sin bajar de 0.
+     * Disminuye el HP actual según el daño, sin bajar de 0.
      * @param cantidad el daño recibido
      */
-    public void recibirDMG(int cantidad) {
+    public void recibirDaño(int cantidad) {
         this.hpActual -= cantidad;
         if (this.hpActual < 0) {
             this.hpActual = 0;
@@ -53,8 +51,8 @@ public class Estadisticas {
     }
 
     /**
-     * Restaura HP sin superar el límite máximo actual.
-     * @param cantidad la cantidad de HP a restaurar
+     * Restaura HP sin superar el HP máximo actual.
+     * @param cantidad la cantidad de HP restaurada
      */
     public void restaurarHP(int cantidad) {
         this.hpActual += cantidad;

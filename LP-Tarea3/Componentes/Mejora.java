@@ -1,8 +1,8 @@
 package Componentes;
 
 /**
- * Clase que representa una mejora permanente comprable en la Tienda del Sector 7.
- * Aplica bonificaciones a las estadísticas base de Cloud.
+ * Clase que representa una mejora permanente comprable en la tienda del sector 7.
+ * Aplica bonificaciones a las estadísticas base.
  */
 public class Mejora {
 
@@ -12,7 +12,7 @@ public class Mejora {
     private int valorBono;
 
     /**
-     * Constructor que crea una Mejora con sus atributos de tienda.
+     * Constructor que crea una mejora con sus atributos de tienda.
      * @param nombre nombre de la mejora
      * @param costoChatarra costo en chatarra para adquirirla
      * @param statAfectado estadística que mejora

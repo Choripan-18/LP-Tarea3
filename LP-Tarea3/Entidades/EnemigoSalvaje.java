@@ -1,16 +1,15 @@
 package Entidades;
 
 import Componentes.Elemento;
-import Componentes.Estadisticas;
 import Componentes.Vulnerable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
- * Enemigo salvaje de la zona Gongaga. Sensible al poder elemental.
- * Implementa la interfaz Vulnerable para gestionar debilidades, resistencias e inmunidades.
- * Al ser derrotado suelta XP (80-100) y Chatarra (50-75).
+ * Enemigo de la zona Gongaga.
+ * Implementa la interfaz Vulnerable para gestionar debilidades.
+ * Al ser derrotado suelta xp y chatarra.
  */
 public class EnemigoSalvaje extends Enemigo implements Vulnerable {
 
@@ -25,9 +24,9 @@ public class EnemigoSalvaje extends Enemigo implements Vulnerable {
      * @param nombre nombre del enemigo
      * @param hpMaximo HP máximo
      * @param fuerza fuerza de ataque
-     * @param debilidades lista de elementos ante los que es débil (x2.0)
+     * @param debilidades lista de elementos ante los que es débil (x2)
      * @param resistencias lista de elementos ante los que resiste (x0.5)
-     * @param inmunidades lista de elementos ante los que es inmune (x0.0)
+     * @param inmunidades lista de elementos ante los que es inmune (x0)
      */
     public EnemigoSalvaje(String nombre, int hpMaximo, int fuerza,
                           List<Elemento> debilidades,
@@ -44,7 +43,7 @@ public class EnemigoSalvaje extends Enemigo implements Vulnerable {
 
     /**
      * Evalúa el multiplicador de daño mágico según el elemento del ataque recibido.
-     * @param elemento el elemento del ataque de Cloud
+     * @param elemento el elemento del ataque del personaje
      * @return 2.0 si es debilidad, 0.5 si es resistencia, 0.0 si es inmunidad, 1.0 si es neutro
      */
     @Override
@@ -66,10 +65,10 @@ public class EnemigoSalvaje extends Enemigo implements Vulnerable {
             System.out.println(nombre + " falla su ataque!");
             return;
         }
-        int dano = calcularDanoFisico();
-        jugador.getStats().recibirDMG(dano);
-        jugador.getBusterSword().cargarLimiteAlRecibirDano(dano);
-        System.out.println(nombre + " ataca a Cloud por " + dano + " de daño físico!");
+        int daño = calcularDañoFisico();
+        jugador.getStats().recibirDaño(daño);
+        jugador.getBusterSword().cargarLimiteAlRecibirDaño(daño);
+        System.out.println(nombre + " ataca a Cloud por " + daño + " de daño físico!");
     }
 
     /**
@@ -77,10 +76,10 @@ public class EnemigoSalvaje extends Enemigo implements Vulnerable {
      * @param jugador el jugador que recibe la recompensa
      */
     @Override
-    public void giveXpRecompensa(Jugador jugador) {
+    public void darRecompensa(Jugador jugador) {
         System.out.println(nombre + " derrotado! Cloud obtiene " + xpRecompensa + " XP y " + chatarraRecompensa + " de chatarra.");
         jugador.recibirXP(xpRecompensa);
-        jugador.giveChatarraRecompensa(this);
+        jugador.darChatarraRecompensa(this);
     }
 
     // --- Getters y Setters ---

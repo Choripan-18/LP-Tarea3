@@ -3,10 +3,8 @@ package Entidades;
 import java.util.Random;
 
 /**
- * Jefe Final del juego. Ubicado en el Núcleo del Planeta.
- * Posee un contadorSuperNova que aumenta cada turno. Al llegar a 10, lanza SuperNova
- * que aniquila a Cloud instantáneamente. El contador se reinicia a 0 si Cloud lo
- * ataca con un ataque Límite. Tiene 90% de precisión (en vez del 85% estándar).
+ * Jefe final del juego ubicado en el núcleo del planeta.
+ * Su ataque SuperNova aniquila instantáneamente si su contador llega a 10.
  */
 public class Sephiroth extends Enemigo {
 
@@ -34,10 +32,10 @@ public class Sephiroth extends Enemigo {
         if (precision > 0.90) {
             System.out.println("Sephiroth falla su ataque!");
         } else {
-            int dano = calcularDanoFisico();
-            jugador.getStats().recibirDMG(dano);
-            jugador.getBusterSword().cargarLimiteAlRecibirDano(dano);
-            System.out.println("Sephiroth ataca a Cloud por " + dano + " de daño físico!");
+            int daño = calcularDañoFisico();
+            jugador.getStats().recibirDaño(daño);
+            jugador.getBusterSword().cargarLimiteAlRecibirDaño(daño);
+            System.out.println("Sephiroth ataca a Cloud por " + daño + " de daño físico!");
         }
         // Incrementar contador de SuperNova después de atacar
         contadorSuperNova++;
@@ -52,8 +50,8 @@ public class Sephiroth extends Enemigo {
      * @param jugador el jugador objetivo
      */
     public void lanzarSuperNova(Jugador jugador) {
-        System.out.println("*** SEPHIROTH lanza SUPERNOVA! ***");
-        System.out.println("Una energía devastadora arrasa con todo...");
+        System.out.println("*** Sephiroth lanza SUPERNOVA! ***");
+        System.out.println("El ataque de Sephiroth destruye todo a su alrededor, has sido aniquilado...");
         jugador.getStats().setHpActual(0);
     }
 
@@ -79,8 +77,7 @@ public class Sephiroth extends Enemigo {
      * @param jugador el jugador que recibe la recompensa
      */
     @Override
-    public void giveXpRecompensa(Jugador jugador) {
-        // Sephiroth no otorga recompensas convencionales
+    public void darRecompensa(Jugador jugador) {
     }
 
     // --- Getters y Setters ---

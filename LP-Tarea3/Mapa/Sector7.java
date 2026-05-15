@@ -3,13 +3,12 @@ package Mapa;
 import Componentes.*;
 import Entidades.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Zona Segura y Base de Operaciones. Cloud no corre peligro aquí.
+ * Zona Segura y Base de Operaciones.
  * Ofrece el Simulador de Combate y la Tienda de Chatarra.
  */
 public class Sector7 extends Zona {
@@ -34,8 +33,7 @@ public class Sector7 extends Zona {
      * @param jugador el jugador que interactúa con la zona
      */
     @Override
-    public void accionZona(Jugador jugador) {
-        Scanner sc = new Scanner(System.in);
+    public void accionZona(Jugador jugador, Scanner sc) {
         boolean enSector7 = true;
         while (enSector7) {
             System.out.println("\n=== SECTOR 7 ===");
@@ -47,8 +45,8 @@ public class Sector7 extends Zona {
             System.out.print("Opción: ");
             String opcion = sc.nextLine().trim();
             switch (opcion) {
-                case "1": iniciarSimulador(jugador); break;
-                case "2": abrirTienda(jugador); break;
+                case "1": iniciarSimulador(jugador, sc); break;
+                case "2": abrirTienda(jugador, sc); break;
                 case "3": jugador.mostrarEstado(); break;
                 case "4": gestionarMaterias(jugador, sc); break;
                 case "0": enSector7 = false; break;
@@ -59,10 +57,11 @@ public class Sector7 extends Zona {
 
     /**
      * Inicia el Simulador de Combate contra un EnemigoSimulador.
-     * Si Cloud pierde aquí, no hay penalización (queda con 1 HP).
+     * Si Cloud pierde aquí, no hay derrota (queda con 1 HP).
      * @param jugador el jugador que entra al simulador
+     * @param sc el scanner para leer la entrada del usuario
      */
-    public void iniciarSimulador(Jugador jugador) {
+    public void iniciarSimulador(Jugador jugador, Scanner sc) {
         System.out.println("\n--- SIMULADOR DE COMBATE ---");
         int cantidad = 1 + rand.nextInt(2); // 1 o 2 enemigos
         List<Enemigo> enemigos = new ArrayList<>();
@@ -70,9 +69,9 @@ public class Sector7 extends Zona {
             enemigos.add(new EnemigoSimulador());
         }
         System.out.println("Aparecen " + cantidad + " Soldado(s) Común!");
-        ejecutarCombate(jugador, enemigos, false);
-        // Restaurar HP/MP de Cloud tras el simulador (sin penalización)
-        jugador.getStats().restaurarHPCompleto();
+        ejecutarCombate(jugador, enemigos, false, sc);
+        // Restaurar HP/MP de Cloud tras el simulador 
+        jugador.getStats().restaurarHPCompleto();   
         jugador.getStats().restaurarMPCompleto();
         System.out.println("Fin del simulador. HP de Cloud restaurado.");
     }
@@ -80,9 +79,9 @@ public class Sector7 extends Zona {
     /**
      * Abre la Tienda de Chatarra donde Cloud puede comprar Mejoras permanentes.
      * @param jugador el jugador que interactúa con la tienda
+     * @param sc el scanner para leer la entrada del usuario
      */
-    public void abrirTienda(Jugador jugador) {
-        Scanner sc = new Scanner(System.in);
+    public void abrirTienda(Jugador jugador, Scanner sc) {
         boolean enTienda = true;
         while (enTienda) {
             System.out.println("\n--- TIENDA DE CHATARRA ---");
@@ -141,7 +140,7 @@ public class Sector7 extends Zona {
     }
 
     /**
-     * Permite a Cloud gestionar sus materias: equipar desde la mochila o desequipar del Arma.
+     * Permite a Cloud gestionar sus materias, equipar desde la mochila o desequipar del Arma.
      * @param jugador el jugador
      * @param sc el scanner de entrada
      */
@@ -202,10 +201,10 @@ public class Sector7 extends Zona {
      * Ejecuta un combate por turnos entre Cloud y una lista de enemigos.
      * @param jugador el jugador
      * @param enemigos la lista de enemigos a combatir
-     * @param esPeligroso si true, la muerte de Cloud aplica penalización
+     * @param esPeligroso si true, la muerte de Cloud aplica derrota
+     * @param sc el scanner para leer la entrada del usuario
      */
-    public void ejecutarCombate(Jugador jugador, List<Enemigo> enemigos, boolean esPeligroso) {
-        Scanner sc = new Scanner(System.in);
+    public void ejecutarCombate(Jugador jugador, List<Enemigo> enemigos, boolean esPeligroso, Scanner sc) {
         jugador.getStats().restaurarMPCompleto();
 
         System.out.println("\n=== INICIO DEL COMBATE ===");
@@ -244,11 +243,11 @@ public class Sector7 extends Zona {
 
             switch (accion) {
                 case "1": // Ataque físico
-                    int danoFisico = jugador.getBusterSword().calcularDanoFisico();
+                    int dañoFisico = jugador.getBusterSword().calcularDañoFisico();
                     if (objetivo != null) {
-                        objetivo.getStats().recibirDMG(danoFisico);
-                        jugador.getBusterSword().cargarLimiteAlInfligirDano(danoFisico);
-                        System.out.println("Cloud ataca a " + objetivo.getNombre() + " por " + danoFisico + " de daño físico!");
+                        objetivo.getStats().recibirDaño(dañoFisico);
+                        jugador.getBusterSword().cargarLimiteAlInfligirDaño(dañoFisico);
+                        System.out.println("Cloud ataca a " + objetivo.getNombre() + " por " + dañoFisico + " de daño físico!");
                     }
                     break;
                 case "2": // Magia ofensiva
@@ -259,10 +258,10 @@ public class Sector7 extends Zona {
                     break;
                 case "4": // Límite
                     if (jugador.getBusterSword().limiteDisponible()) {
-                        int danoLimite = jugador.getBusterSword().calcularDanoLimite();
+                        int dañoLimite = jugador.getBusterSword().calcularDañoLimite();
                         if (objetivo != null) {
-                            objetivo.getStats().recibirDMG(danoLimite);
-                            System.out.println("Cloud lanza OMNISLASH a " + objetivo.getNombre() + " por " + danoLimite + " de daño!");
+                            objetivo.getStats().recibirDaño(dañoLimite);
+                            System.out.println("Cloud lanza Desmantelar a " + objetivo.getNombre() + " por " + dañoLimite + " de daño!");
                             // Si el objetivo es Sephiroth, reiniciar contador
                             if (objetivo instanceof Sephiroth) {
                                 ((Sephiroth) objetivo).reiniciarContadorSuperNova();
@@ -295,7 +294,7 @@ public class Sector7 extends Zona {
                     // Dar recompensa si aún no se dio
                     if (!recompensasDadas.contains(e)) {
                         recompensasDadas.add(e);
-                        e.giveXpRecompensa(jugador);
+                        e.darRecompensa(jugador);
                     }
                 } else {
                     todosVencidos = false;
@@ -365,7 +364,7 @@ public class Sector7 extends Zona {
         }
         System.out.println("Elementos disponibles:");
         for (int i = 0; i < elementosDisponibles.size(); i++) {
-            int n = jugador.getBusterSword().contarMateriasDeElemento(elementosDisponibles.get(i));
+            int n = jugador.getBusterSword().contarMateriasElemento(elementosDisponibles.get(i));
             int costo = 10 + (5 * n);
             System.out.println((i + 1) + ". " + elementosDisponibles.get(i) + " (n=" + n + ", MP=" + costo + ")");
         }
@@ -377,11 +376,11 @@ public class Sector7 extends Zona {
                 return;
             }
             Elemento elemento = elementosDisponibles.get(idx);
-            int dano = jugador.getBusterSword().calcularDanoMagico(elemento, objetivo);
-            if (dano > 0 && objetivo != null) {
-                objetivo.getStats().recibirDMG(dano);
-                jugador.getBusterSword().cargarLimiteAlInfligirDano(dano);
-                System.out.println("Cloud lanza " + elemento + " a " + objetivo.getNombre() + " por " + dano + " de daño!");
+            int daño = jugador.getBusterSword().calcularDañoMagico(elemento, objetivo);
+            if (daño > 0 && objetivo != null) {
+                objetivo.getStats().recibirDaño(daño);
+                jugador.getBusterSword().cargarLimiteAlInfligirDaño(daño);
+                System.out.println("Cloud lanza " + elemento + " a " + objetivo.getNombre() + " por " + daño + " de daño!");
             }
         } catch (NumberFormatException e) {
             System.out.println("Entrada no válida.");
@@ -398,7 +397,7 @@ public class Sector7 extends Zona {
             System.out.println("No tienes la materia CURA equipada.");
             return;
         }
-        int n = jugador.getBusterSword().contarMateriasDeElemento(Elemento.CURA);
+        int n = jugador.getBusterSword().contarMateriasElemento(Elemento.CURA);
         int costoMP = 10 + (5 * n);
         if (!jugador.getStats().consumirMP(costoMP)) {
             System.out.println("No tienes suficiente MP para CURA.");

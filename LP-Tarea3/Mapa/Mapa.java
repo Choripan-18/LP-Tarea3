@@ -25,9 +25,9 @@ public class Mapa {
     /**
      * Muestra el menú principal del mapa y permite al jugador elegir a dónde ir.
      * @param jugador el jugador que navega el mapa
+     * @param sc el scanner para leer la entrada del usuario
      */
-    public void mostrarMapa(Jugador jugador) {
-        Scanner sc = new Scanner(System.in);
+    public void mostrarMapa(Jugador jugador, Scanner sc) {
         boolean jugando = true;
         while (jugando) {
             System.out.println("\n=============================");
@@ -40,25 +40,25 @@ public class Mapa {
             System.out.println("3. Núcleo del Planeta (Jefe Final) [Req: Nivel 20, 2 Materias]");
             System.out.println("0. Salir del juego");
             System.out.println("=============================");
-            System.out.print("¿A dónde deseas ir? ");
+            System.out.print("\n¿A dónde deseas ir? \n");
             String opcion = sc.nextLine().trim();
 
             switch (opcion) {
                 case "1":
-                    sector7.accionZona(jugador);
+                    sector7.accionZona(jugador, sc);
                     break;
                 case "2":
                     if (gongaga.validarAcceso(jugador)) {
-                        gongaga.accionZona(jugador);
+                        gongaga.accionZona(jugador, sc);
                     }
                     break;
                 case "3":
                     if (nucleoPlaneta.validarAcceso(jugador)) {
-                        nucleoPlaneta.accionZona(jugador);
+                        nucleoPlaneta.accionZona(jugador, sc);
                     }
                     break;
                 case "0":
-                    System.out.println("Hasta la próxima, Cloud!");
+                    System.out.println("Hasta la próxima!");
                     jugando = false;
                     break;
                 default:

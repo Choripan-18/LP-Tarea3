@@ -3,38 +3,37 @@ package Entidades;
 import java.util.Random;
 
 /**
- * Enemigo de entrenamiento disponible en el Simulador del Sector 7.
- * No posee debilidades elementales. Su ataque nunca reduce el HP de Cloud por debajo de 1.
- * Otorga XP aleatorio entre 15 y 20, no suelta chatarra.
- */
+ * Enemigo de entrenamiento disponible en el simulador del Sector 7.
+ * Su ataque nunca reduce el HP del jugador por debajo de 1.
+ * Otorga xp pero no suelta chatarra.
+ */ 
 public class EnemigoSimulador extends Enemigo {
 
     private static final Random rand = new Random();
 
     /**
-     * Constructor del EnemigoSimulador (Soldado Común).
-     * Inicializa con HP: 50 y Fuerza: 15.
+     * Constructor del EnemigoSimulador Soldado Común.
      */
     public EnemigoSimulador() {
         super("Soldado Común", 0, 0, 50, 15);
-        // XP aleatorio entre 15 y 20, se asigna al crear
+        // XP aleatorio entre 15 y 20, se asigna al crear.
         this.xpRecompensa = 15 + rand.nextInt(6);
     }
 
     /**
-     * Verifica que el daño calculado no reduzca el HP de Cloud por debajo de 1.
+     * Verifica que el daño calculado no reduzca el HP del jugador bajo 1.
      * @param jugador el jugador objetivo
      * @return true si el ataque fue seguro (garantiza HP >= 1)
      */
-    public boolean checkDanoSeguro(Jugador jugador) {
-        int dano = calcularDanoFisico();
-        int hpResultante = jugador.getStats().getHpActual() - dano;
+    public boolean checkdañoSeguro(Jugador jugador) {
+        int daño = calcularDañoFisico();
+        int hpResultante = jugador.getStats().getHpActual() - daño;
         return hpResultante >= 1;
     }
 
     /**
      * Ataca al jugador con un ataque físico. Tiene 85% de precisión.
-     * El daño no puede reducir el HP de Cloud por debajo de 1 en el simulador.
+     * El daño no puede reducir el HP del jugador bajo 1 en el simulador.
      * @param jugador el jugador objetivo del ataque
      */
     @Override
@@ -44,17 +43,17 @@ public class EnemigoSimulador extends Enemigo {
             System.out.println(nombre + " falla su ataque!");
             return;
         }
-        int dano = calcularDanoFisico();
+        int daño = calcularDañoFisico();
         int hpActual = jugador.getStats().getHpActual();
         // Asegurar que HP no baje de 1
-        if (hpActual - dano < 1) {
-            dano = hpActual - 1;
+        if (hpActual - daño < 1) {
+            daño = hpActual - 1;
         }
-        if (dano > 0) {
-            jugador.getStats().recibirDMG(dano);
-            // Cargar barra de limite de Cloud al recibir daño
-            jugador.getBusterSword().cargarLimiteAlRecibirDano(dano);
-            System.out.println(nombre + " ataca a Cloud por " + dano + " de daño físico!");
+        if (daño > 0) {
+            jugador.getStats().recibirDaño(daño);
+            // Cargar barra de ataque límite al recibir daño
+            jugador.getBusterSword().cargarLimiteAlRecibirDaño(daño);
+            System.out.println(nombre + " ataca a Cloud por " + daño + " de daño físico!");
         } else {
             System.out.println(nombre + " ataca pero Cloud ya tiene 1 HP, el daño es nulo.");
         }
@@ -65,7 +64,7 @@ public class EnemigoSimulador extends Enemigo {
      * @param jugador el jugador que recibe la recompensa
      */
     @Override
-    public void giveXpRecompensa(Jugador jugador) {
+    public void darRecompensa(Jugador jugador) {
         System.out.println(nombre + " derrotado! Cloud obtiene " + xpRecompensa + " XP.");
         jugador.recibirXP(xpRecompensa);
     }

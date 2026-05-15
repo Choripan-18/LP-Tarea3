@@ -1,9 +1,7 @@
 package Componentes;
 
 /**
- * Enumeración que representa los elementos mágicos del juego.
- * Cada Materia tiene un elemento asignado que determina
- * sus interacciones con las debilidades y resistencias enemigas.
+ * Enumeración para los elementos de las materias.
  */
 public enum Elemento {
     FUEGO,

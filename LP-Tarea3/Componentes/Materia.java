@@ -1,8 +1,7 @@
 package Componentes;
 
 /**
- * Clase que representa una Materia (esfera mágica) del juego.
- * Las materias se equipan en las ranuras del Arma de Cloud para potenciar la magia.
+ * Clase que representa una materia del juego.
  */
 public class Materia {
 
@@ -10,9 +9,9 @@ public class Materia {
     private Elemento elemento;
 
     /**
-     * Constructor que crea una Materia con un nombre y un elemento dados.
+     * Constructor que crea una materia con un nombre y un elemento dados.
      * @param nombre el nombre de la materia
-     * @param elemento el elemento mágico de la materia
+     * @param elemento el elemento de la materia
      */
     public Materia(String nombre, Elemento elemento) {
         this.nombre = nombre;

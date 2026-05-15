@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Zona salvaje donde Cloud recolecta recursos.
- * Al explorar, ocurre un evento aleatorio: encontrar una Materia (30%)
- * o sufrir una emboscada de 1-3 EnemigoSalvaje (70%).
  * Requiere nivel mínimo 5 para acceder.
  */
 public class Gongaga extends Zona {
@@ -43,13 +42,13 @@ public class Gongaga extends Zona {
      * @param jugador el jugador que explora
      */
     @Override
-    public void accionZona(Jugador jugador) {
+    public void accionZona(Jugador jugador, Scanner sc) {
         System.out.println("\n--- Explorando Gongaga... ---");
         double evento = rand.nextDouble();
         if (evento < 0.30) {
             encontrarMateria(jugador);
         } else {
-            emboscada(jugador);
+            emboscada(jugador, sc);
         }
     }
 
@@ -62,12 +61,11 @@ public class Gongaga extends Zona {
         Elemento elementoAleatorio = elementos[rand.nextInt(elementos.length)];
         Materia materia = new Materia("Materia " + elementoAleatorio.name(), elementoAleatorio);
         jugador.getMochila().add(materia);
-        System.out.println("*** Cloud encontró una " + materia + "! Se guardó en la mochila. ***");
+        System.out.println("*** Cloud encontró una " + materia + "! La guardas en tu mochila. ***");
     }
 
     /**
-     * Genera un grupo de enemigos para la emboscada (1-3 EnemigoSalvaje).
-     * 60% de que aparezca 1, 30% de que aparezcan 2, 10% de que aparezcan 3.
+     * Genera un grupo de enemigos para la emboscada.
      * @return lista de enemigos generados para la emboscada
      */
     public List<Enemigo> generarGrupoEnemigo() {
@@ -112,20 +110,21 @@ public class Gongaga extends Zona {
 
     /**
      * Ejecuta una emboscada con el grupo de enemigos generado.
-     * Si Cloud muere, aplica la penalización correspondiente.
+     * Si el jugador muere aplica la derrota.
      * @param jugador el jugador que es emboscado
+     * @param sc el scanner para leer la entrada del usuario
      */
-    private void emboscada(Jugador jugador) {
+    private void emboscada(Jugador jugador, Scanner sc) {
         List<Enemigo> grupo = generarGrupoEnemigo();
         System.out.println("*** EMBOSCADA! Aparecen " + grupo.size() + " enemigo(s): ***");
         for (Enemigo e : grupo) {
             System.out.println("  - " + e.getNombre());
         }
-        sector7Ref.ejecutarCombate(jugador, grupo, true);
+        sector7Ref.ejecutarCombate(jugador, grupo, true, sc);
 
-        // Verificar si Cloud murió
+        // Verificar el jugador fue derrotado.
         if (jugador.getStats().getHpActual() <= 0) {
-            jugador.aplicarPenalidadDerrota();
+            jugador.aplicarDerrota();
         }
     }
 

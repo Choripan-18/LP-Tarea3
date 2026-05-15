@@ -1,12 +1,11 @@
+import java.util.Scanner;
+
 import Entidades.Jugador;
 import Mapa.Mapa;
 
 /**
- * Clase principal del juego "La Amenaza de Sephiroth".
+ * Clase principal del juego.
  * Inicializa el jugador Cloud y arranca el bucle principal del juego.
- *
- * Curso: INF-253 Lenguajes de Programación
- * Tarea 3 - 2026-1
  */
 public class Main {
 
@@ -18,7 +17,7 @@ public class Main {
      */
     public static void main(String[] args) {
         System.out.println("=========================================");
-        System.out.println("  INF-253 - La Amenaza de Sephiroth");
+        System.out.println(" La Amenaza de Sephiroth");
         System.out.println("=========================================");
         System.out.println("El mundo está en peligro...");
         System.out.println("Sephiroth se atrincheró en las profundidades del planeta.");
@@ -27,11 +26,13 @@ public class Main {
 
         // Instanciar al jugador Cloud
         Jugador cloud = new Jugador();
+        Scanner sc = new Scanner(System.in);
         System.out.println("Cloud ha despertado en el Sector 7.");
         System.out.println("Stats iniciales: " + cloud.getStats());
 
         // Instanciar el mapa y comenzar el juego
         Mapa mapa = new Mapa();
-        mapa.mostrarMapa(cloud);
+        mapa.mostrarMapa(cloud, sc);
+        sc.close();
     }
 }

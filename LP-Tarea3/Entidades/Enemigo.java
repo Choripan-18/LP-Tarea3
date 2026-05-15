@@ -20,7 +20,7 @@ public abstract class Enemigo {
      * @param xpRecompensa XP que otorga al ser derrotado
      * @param chatarraRecompensa chatarra que suelta al ser derrotado
      * @param hpMaximo HP máximo del enemigo
-     * @param fuerza Fuerza del enemigo para sus ataques
+     * @param fuerza Fuerza del enemigo
      */
     public Enemigo(String nombre, int xpRecompensa, int chatarraRecompensa, int hpMaximo, int fuerza) {
         this.nombre = nombre;
@@ -41,7 +41,7 @@ public abstract class Enemigo {
      * Entrega la recompensa de XP y chatarra al jugador al ser derrotado.
      * @param jugador el jugador que recibe la recompensa
      */
-    public abstract void giveXpRecompensa(Jugador jugador);
+    public abstract void darRecompensa(Jugador jugador);
 
     /**
      * Verifica si el enemigo está muerto (HP <= 0).
@@ -55,7 +55,7 @@ public abstract class Enemigo {
      * Calcula el daño físico base: floor(Fuerza x 1.25).
      * @return daño físico calculado
      */
-    protected int calcularDanoFisico() {
+    protected int calcularDañoFisico() {
         return (int)(stats.getFuerza() * 1.25);
     }
 
